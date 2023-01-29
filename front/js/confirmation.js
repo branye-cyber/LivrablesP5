@@ -1,6 +1,3 @@
-let variable = "Je suis sur la page 'Confirmation de commande'...";
-console.log(variable);
-
 // Fonction fetch => Obternir les données depuis l'API
 fetch("http://localhost:3000/api/products/")
   .then(function (response) {
