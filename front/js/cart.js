@@ -12,12 +12,7 @@ for (let j = 0; j < currentCart.length; j++) {
       }
     })
     .then(function (product) {
-      console.log(product.altTxt);
-      console.log(product.name);
-      console.log(currentCart[j].color);
-      console.log(currentCart[j].quantity * product.price + " € (Prix total)");
-      console.log("Qté : " + currentCart[j].quantity);
-      console.log(product.price + " € (Prix unitaire)");
+      currentCart[j].price = currentCart[j].quantity * product.price;
 
       // Récupération de l'élément du DOM qui accueillera les fiches
       const sectionItems = document.querySelector("#cart__items");
@@ -102,24 +97,39 @@ for (let j = 0; j < currentCart.length; j++) {
       cart__item__content__settings__delete.appendChild(deleteItem);
 
       // Récapitulatif du Panier (Nbe articles et Prix total)
-      // Récupération de l'élément du DOM qui accueillera les informations
-      const totalQuantity = document.querySelector("#totalQuantity");
+      let quantityOrdered = 0;
+      let priceOrdered = 0;
       for (let j = 0; j < currentCart.length; j++) {
-        let quantityOrdered = 0;
         quantityOrdered = quantityOrdered + currentCart[j].quantity;
-        console.log(quantityOrdered);
+        priceOrdered = priceOrdered + parseInt(currentCart[j].price);
       }
-
-      // Entrée des coordonnées du Client
-      // Prénom
-      // Nom
-      // Adresse
-      // Ville
-      // Email
-      // Bouton "Commander !"
-      const button = document.querySelector("#order");
-      button.addEventListener("click", (event) => {
-        window.location.href = "confirmation.html";
-      });
+      // Enregistrement "Nombre d'articles et Prix"
+      localStorage.setItem("quantity", quantityOrdered);
+      localStorage.setItem("price", priceOrdered);
     });
 }
+// Récupération de l'élément du DOM qui accueillera les informations
+const quantityOrdered = JSON.parse(localStorage.getItem("quantity"));
+const priceOrdered = JSON.parse(localStorage.getItem("price"));
+
+const totalQuantity = document.querySelector("#totalQuantity");
+const quantityPanier = document.createElement("span");
+quantityPanier.innerText = quantityOrdered;
+totalQuantity.appendChild(quantityPanier);
+
+const totalPrice = document.querySelector("#totalPrice");
+const pricePanier = document.createElement("span");
+pricePanier.innerText = priceOrdered;
+totalPrice.appendChild(pricePanier);
+
+// Entrée des coordonnées du Client
+// Prénom
+// Nom
+// Adresse
+// Ville
+// Email
+// Bouton "Commander !"
+const button = document.querySelector("#order");
+button.addEventListener("click", (event) => {
+  window.location.href = "confirmation.html";
+});
