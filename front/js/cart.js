@@ -105,31 +105,33 @@ for (let j = 0; j < currentCart.length; j++) {
       }
       // Enregistrement "Nombre d'articles et Prix"
       localStorage.setItem("quantity", quantityOrdered);
+      // console.log(quantityOrdered);
       localStorage.setItem("price", priceOrdered);
+
+      // Récupération de l'élément du DOM qui accueillera les informations
+      quantityOrdered = JSON.parse(localStorage.getItem("quantity"));
+      priceOrdered = JSON.parse(localStorage.getItem("price"));
+
+      const totalQuantity = document.querySelector("#totalQuantity");
+      const quantityPanier = document.createElement("span");
+      quantityPanier.innerText = quantityOrdered;
+      totalQuantity.appendChild(quantityPanier);
+
+      const totalPrice = document.querySelector("#totalPrice");
+      const pricePanier = document.createElement("span");
+      pricePanier.innerText = priceOrdered;
+      totalPrice.appendChild(pricePanier);
+
+      // Entrée des coordonnées du Client
+      // Prénom
+      // Nom
+      // Adresse
+      // Ville
+      // Email
+      // Bouton "Commander !"
+      const button = document.querySelector("#order");
+      button.addEventListener("click", (event) => {
+        window.location.href = "confirmation.html";
+      });
     });
 }
-// Récupération de l'élément du DOM qui accueillera les informations
-const quantityOrdered = JSON.parse(localStorage.getItem("quantity"));
-const priceOrdered = JSON.parse(localStorage.getItem("price"));
-
-const totalQuantity = document.querySelector("#totalQuantity");
-const quantityPanier = document.createElement("span");
-quantityPanier.innerText = quantityOrdered;
-totalQuantity.appendChild(quantityPanier);
-
-const totalPrice = document.querySelector("#totalPrice");
-const pricePanier = document.createElement("span");
-pricePanier.innerText = priceOrdered;
-totalPrice.appendChild(pricePanier);
-
-// Entrée des coordonnées du Client
-// Prénom
-// Nom
-// Adresse
-// Ville
-// Email
-// Bouton "Commander !"
-const button = document.querySelector("#order");
-button.addEventListener("click", (event) => {
-  window.location.href = "confirmation.html";
-});
