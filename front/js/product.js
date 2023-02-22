@@ -75,7 +75,8 @@ fetch("http://localhost:3000/api/products/" + idProduit)
               product.idProduit === idProduit && product.color === color
           );
           if (findProduct) {
-            findProduct.quantity += Number(quantity);
+            findProduct.quantity =
+              parseInt(quantity) + parseInt(findProduct.quantity);
             localStorage.setItem("cart", JSON.stringify(currentCart));
             console.log("j'ajoute x canapé à la liste");
           } else {

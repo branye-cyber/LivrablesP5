@@ -7,7 +7,9 @@ function calculTotal() {
   let priceOrdered = 0;
   for (let b = 0; b < currentCart.length; b++) {
     quantityOrdered = quantityOrdered + parseInt(currentCart[b].quantity);
-    priceOrdered = priceOrdered + parseInt(currentCart[b].price);
+    priceOrdered =
+      priceOrdered +
+      parseInt(currentCart[b].price) * parseInt(currentCart[b].quantity);
   }
 
   const totalQuantity = document.querySelector("#totalQuantity");
@@ -32,7 +34,7 @@ async function main() {
         }
       })
       .then(function (product) {
-        currentCart[c].price = currentCart[c].quantity * product.price;
+        currentCart[c].price = product.price;
         affichage(product, currentCart[c]);
       });
   }
@@ -79,7 +81,7 @@ function affichage(product, productLocalstorage) {
 
   // On crée l'élément "Prix du Produit"
   const prixElement = document.createElement("p");
-  prixElement.innerText = `${productLocalstorage.quantity * product.price} €`;
+  prixElement.innerText = `${product.price} €`;
   cart__item__content__description.appendChild(prixElement);
 
   const cart__item__content__settings = document.createElement("div");
@@ -124,6 +126,7 @@ function affichage(product, productLocalstorage) {
         nouvelleQuantitéDansLocalStorage[d].color === productLocalstorage.color
       ) {
         nouvelleQuantitéDansLocalStorage[d].quantity = event.target.value;
+        currentCart[d].quantity = event.target.value;
         localStorage.setItem(
           "cart",
           JSON.stringify(nouvelleQuantitéDansLocalStorage)
@@ -132,20 +135,7 @@ function affichage(product, productLocalstorage) {
       }
     }
     quantity = event.target.value;
-
-    const currentCart = JSON.parse(localStorage.getItem("cart"));
-    let quantityOrdered = 0;
-    let priceOrdered = 0;
-    for (let e = 0; e < currentCart.length; e++) {
-      quantityOrdered = quantityOrdered + parseInt(currentCart[e].quantity);
-      priceOrdered = priceOrdered + currentCart[e].quantity * product.price;
-    }
-
-    const totalQuantity = document.querySelector("#totalQuantity");
-    totalQuantity.innerText = quantityOrdered;
-
-    const totalPrice = document.querySelector("#totalPrice");
-    totalPrice.innerText = priceOrdered;
+    calculTotal();
   });
 
   cart__item__content__settings__quantity.appendChild(quantity);
@@ -173,19 +163,26 @@ main();
 // Coordonnées du Client
 // Création des RegExp pour chaque champ du formulaire et test si les caractères entrés sont valides
 const RegExp = /^[a-zA-ZéèêëàâäôöîïùûüçÉÈÊËÀÂÄÔÖÎÏÙÛÜÇ\s-]+$/;
-const addRegExp = /^[a-zA-Z0-9éèêëàâäôöîïùûüçÉÈÊËÀÂÄÔÖÎÏÙÛÜÇ\s-]+$/;
+const addRegExp = /^[a-zA-Z0-9éèêëàâäôöîïùûüçÉÈÊËÀÂÄÔÖÎÏÙÛÜÇ,\s-]+$/;
 const emailRegExp =
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 // Prénom
+// Tester le "champ vide" avec la fonction "length"
 let prenom = document.getElementById("firstName");
 prenom.addEventListener("change", function (e) {
   prenom = e.target.value;
-  prenomErreur = document.getElementById("firstNameErrorMsg");
-  if (RegExp.test(prenom) === true) {
-    prenomErreur.innerHTML = "";
+  console.log(prenom.length);
+  if ((prenom.length = 0)) {
+    prenomErreur.innerText = "Entrez votre prénom";
   } else {
-    prenomErreur.innerText = "N'utilisez que des lettres !";
+    prenomErreur = document.getElementById("firstNameErrorMsg");
+    if (RegExp.test(prenom) === true) {
+      prenomErreur.innerHTML = "";
+    } else {
+      prenomErreur.innerText = "N'utilisez que des lettres !";
+    }
+    console.log(prenom);
   }
 });
 
