@@ -1,5 +1,5 @@
 // Récupération des données du localstorage
-const currentCart = JSON.parse(localStorage.getItem("cart")) || [];
+let currentCart = JSON.parse(localStorage.getItem("cart")) || [];
 
 // Création de la fonction de calcul Nbe Articles / Prix
 function calculTotal() {
@@ -154,10 +154,23 @@ function affichage(product, productLocalstorage) {
   deleteItem.innerText = "Supprimer";
 
   deleteItem.addEventListener("click", function (e) {
-    console.log("Je veux supprimer cet article... mais comment faire ?");
+    articleElement.remove();
+    // Supprimer le produit du localStorage
+    const filteredArray = currentCart.filter(
+      (val) =>
+        val.idProduit != product._id && val.color != productLocalstorage.color
+    );
+    console.log(filteredArray);
+    localStorage.setItem("cart", JSON.stringify(filteredArray));
+    // Supprimer le produit du currentcart
+    currentCart = JSON.parse(localStorage.getItem("cart"));
+    console.log(currentCart);
+    calculTotal();
   });
+
   cart__item__content__settings__delete.appendChild(deleteItem);
 }
+console.log(currentCart);
 main();
 
 // Coordonnées du Client
@@ -168,69 +181,82 @@ const emailRegExp =
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 // Prénom
-// Tester le "champ vide" avec la fonction "length"
 let prenom = document.getElementById("firstName");
-prenom.addEventListener("change", function (e) {
+prenom.addEventListener("blur", function (e) {
   prenom = e.target.value;
-  console.log(prenom.length);
-  if ((prenom.length = 0)) {
-    prenomErreur.innerText = "Entrez votre prénom";
+  prenomErreur = document.getElementById("firstNameErrorMsg");
+  if (prenom.length == 0) {
+    prenomErreur.innerText = "Entrez votre prénom...";
   } else {
-    prenomErreur = document.getElementById("firstNameErrorMsg");
     if (RegExp.test(prenom) === true) {
       prenomErreur.innerHTML = "";
     } else {
       prenomErreur.innerText = "N'utilisez que des lettres !";
     }
-    console.log(prenom);
   }
 });
 
 // Nom
 let nom = document.getElementById("lastName");
-nom.addEventListener("change", function (e) {
+nom.addEventListener("blur", function (e) {
   nom = e.target.value;
   nomErreur = document.getElementById("lastNameErrorMsg");
-  if (RegExp.test(nom) === true) {
-    nomErreur.innerHTML = "";
+  if (nom.length == 0) {
+    nomErreur.innerText = "Entrez votre nom...";
   } else {
-    nomErreur.innerText = "N'utilisez que des lettres !";
+    if (RegExp.test(nom) === true) {
+      nomErreur.innerHTML = "";
+    } else {
+      nomErreur.innerText = "N'utilisez que des lettres !";
+    }
   }
 });
 
 // Adresse
 let adresse = document.getElementById("address");
-adresse.addEventListener("change", function (e) {
+adresse.addEventListener("blur", function (e) {
   adresse = e.target.value;
   adresseErreur = document.getElementById("addressErrorMsg");
-  if (addRegExp.test(adresse) === true) {
-    adresseErreur.innerHTML = "";
+  if (adresse.length == 0) {
+    adresseErreur.innerText = "Entrez votre adresse...";
   } else {
-    adresseErreur.innerHTML = "N'utilisez que des chiffres et des lettres !";
+    if (addRegExp.test(adresse) === true) {
+      adresseErreur.innerHTML = "";
+    } else {
+      adresseErreur.innerHTML = "N'utilisez que des chiffres et des lettres !";
+    }
   }
 });
 
 // Ville
 let ville = document.getElementById("city");
-ville.addEventListener("change", function (e) {
+ville.addEventListener("blur", function (e) {
   ville = e.target.value;
   villeErreur = document.getElementById("cityErrorMsg");
-  if (RegExp.test(ville) === true) {
-    villeErreur.innerHTML = "";
+  if (ville.length == 0) {
+    villeErreur.innerText = "Entrez votre ville...";
   } else {
-    villeErreur.innerHTML = "N'utilisez que des lettres !";
+    if (RegExp.test(ville) === true) {
+      villeErreur.innerHTML = "";
+    } else {
+      villeErreur.innerHTML = "N'utilisez que des lettres !";
+    }
   }
 });
 
 // Email
 let email = document.getElementById("email");
-email.addEventListener("change", function (e) {
+email.addEventListener("blur", function (e) {
   email = e.target.value;
   emailErreur = document.getElementById("emailErrorMsg");
-  if (emailRegExp.test(email) === true) {
-    emailErreur.innerHTML = "";
+  if (email.length == 0) {
+    emailErreur.innerText = "Entrez votre adresse mail...";
   } else {
-    emailErreur.innerHTML = "Adresse mail non valide !";
+    if (emailRegExp.test(email) === true) {
+      emailErreur.innerHTML = "";
+    } else {
+      emailErreur.innerHTML = "Adresse mail non valide !";
+    }
   }
 });
 
@@ -244,17 +270,15 @@ commande.addEventListener("click", (e) => {
   contact.adress = adresse;
   contact.city = ville;
   contact.email = email;
-  console.log(contact);
 
   const articleDansPanier = document.querySelectorAll(".cart__item");
   console.log(articleDansPanier);
 
   // Récupére et stocke l'id des produits présents dans le panier
-
   let products = [];
 
   for (let f = 0; f < articleDansPanier.length; f++) {
-    const idProduitDansPanier = articleDansPanier[f]; //.getAttribute("data-id");
+    const idProduitDansPanier = articleDansPanier[f];
 
     products.push(idProduitDansPanier);
     console.log(products);
