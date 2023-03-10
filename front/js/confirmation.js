@@ -7,11 +7,15 @@ fetch("http://localhost:3000/api/products/")
       console.log("Mauvaise réponse du réseau");
     }
   })
+
   // Fonction qui affiche les éléments du DOM
-  .then(function (product) {
+  .then(function () {
+    const idProduitRaw = new URLSearchParams(window.location.search);
+    const idProduit = idProduitRaw.get("orderId");
+
     const orderId = document.querySelector("#orderId");
 
-    orderId.innerText = "65431343444684674";
+    orderId.innerText = idProduit;
 
     // Instruction pour vider le localstorage
     localStorage.clear();

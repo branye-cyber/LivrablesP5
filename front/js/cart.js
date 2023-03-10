@@ -155,13 +155,27 @@ function affichage(product, productLocalstorage) {
 
   deleteItem.addEventListener("click", function (e) {
     articleElement.remove();
-    // Supprimer le produit du localStorage
+
+    // Supprimer un produit du localStorage
     const filteredArray = currentCart.filter(
       (val) =>
-        val.idProduit != product._id && val.color != productLocalstorage.color
+        !(
+          val.idProduit == product._id && val.color == productLocalstorage.color
+        )
     );
-    console.log(filteredArray);
+
+    // console.log(filteredArray);
+    // let noPrice = [
+    //   {
+    //     idProduit: product._id,
+    //     color: productLocalstorage.color,
+    //     quantity: 0,
+    //   },
+    // ];
+    // console.log(noPrice);
+
     localStorage.setItem("cart", JSON.stringify(filteredArray));
+
     // Supprimer le produit du currentcart
     currentCart = JSON.parse(localStorage.getItem("cart"));
     console.log(currentCart);
@@ -170,7 +184,6 @@ function affichage(product, productLocalstorage) {
 
   cart__item__content__settings__delete.appendChild(deleteItem);
 }
-console.log(currentCart);
 main();
 
 // Coordonnées du Client
@@ -267,21 +280,16 @@ commande.addEventListener("click", (e) => {
   let contact = new Object();
   contact.firstName = prenom;
   contact.lastName = nom;
-  contact.adress = adresse;
+  contact.address = adresse;
   contact.city = ville;
   contact.email = email;
 
-  const articleDansPanier = document.querySelectorAll(".cart__item");
-  console.log(articleDansPanier);
-
   // Récupére et stocke l'id des produits présents dans le panier
   let products = [];
-
-  for (let f = 0; f < articleDansPanier.length; f++) {
-    const idProduitDansPanier = articleDansPanier[f];
+  for (let f = 0; f < currentCart.length; f++) {
+    const idProduitDansPanier = currentCart[f].idProduit;
 
     products.push(idProduitDansPanier);
-    console.log(products);
   }
 
   const aEnvoyer = {
@@ -308,7 +316,7 @@ commande.addEventListener("click", (e) => {
       const contenu = await response.json();
       console.log(contenu);
       console.log(contenu.orderId);
-      // window.location.href = "./confirmation.html?orderId=" + contenu.orderId;
+      window.location.href = "./confirmation.html?orderId=" + contenu.orderId;
     } catch (e) {
       console.log(e);
     }
