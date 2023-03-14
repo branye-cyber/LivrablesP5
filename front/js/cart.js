@@ -1,11 +1,14 @@
 // Récupération des données du localstorage
 let currentCart = JSON.parse(localStorage.getItem("cart")) || [];
+let nouvelleQuantitéDansLocalStorage = JSON.parse(localStorage.getItem("cart"));
 
 // Création de la fonction de calcul Nbe Articles / Prix
 function calculTotal() {
   let quantityOrdered = 0;
   let priceOrdered = 0;
   for (let b = 0; b < currentCart.length; b++) {
+    console.log(currentCart[b].price);
+    console.log(currentCart[b].quantity);
     quantityOrdered = quantityOrdered + parseInt(currentCart[b].quantity);
     priceOrdered =
       priceOrdered +
@@ -17,6 +20,7 @@ function calculTotal() {
 
   const totalPrice = document.querySelector("#totalPrice");
   totalPrice.innerText = priceOrdered;
+  console.log(priceOrdered);
 }
 
 // Fonction principale
@@ -115,26 +119,21 @@ function affichage(product, productLocalstorage) {
       );
       event.target.value = 1;
     }
-    let nouvelleQuantitéDansLocalStorage = JSON.parse(
-      localStorage.getItem("cart")
-    );
 
-    for (let d = 0; d < nouvelleQuantitéDansLocalStorage.length; d++) {
-      if (
-        nouvelleQuantitéDansLocalStorage[d].idProduit ===
-          productLocalstorage.idProduit &&
-        nouvelleQuantitéDansLocalStorage[d].color === productLocalstorage.color
-      ) {
-        nouvelleQuantitéDansLocalStorage[d].quantity = event.target.value;
-        currentCart[d].quantity = event.target.value;
-        localStorage.setItem(
-          "cart",
-          JSON.stringify(nouvelleQuantitéDansLocalStorage)
-        );
-        break;
-      }
-    }
-    quantity = event.target.value;
+    // Lecture du localStorage
+    const quantityCart = JSON.parse(localStorage.getItem("cart")) || [];
+    console.log(quantity.value);
+    console.log(quantityCart);
+    quantityCart.quantity = quantity.value;
+    quantityCart.idProduit = quantity.idProduit;
+    quantityCart.color = quantity.color;
+    console.log(quantityCart.idProduit);
+    console.log(quantityCart.color);
+    console.log(quantityCart.quantity);
+
+    localStorage.setItem("cart", JSON.stringify(quantityCart));
+    const currentCart = JSON.parse(localStorage.getItem("cart"));
+    console.log(currentCart);
     calculTotal();
   });
 
@@ -157,22 +156,13 @@ function affichage(product, productLocalstorage) {
     articleElement.remove();
 
     // Supprimer un produit du localStorage
-    const filteredArray = currentCart.filter(
+    let filteredArray = [];
+    filteredArray = nouvelleQuantitéDansLocalStorage.filter(
       (val) =>
         !(
           val.idProduit == product._id && val.color == productLocalstorage.color
         )
     );
-
-    // console.log(filteredArray);
-    // let noPrice = [
-    //   {
-    //     idProduit: product._id,
-    //     color: productLocalstorage.color,
-    //     quantity: 0,
-    //   },
-    // ];
-    // console.log(noPrice);
 
     localStorage.setItem("cart", JSON.stringify(filteredArray));
 
@@ -298,8 +288,6 @@ commande.addEventListener("click", (e) => {
   };
 
   // Post dans l'api le formulaire et l'id des produits
-
-  console.log(aEnvoyer);
   let envoyerCommande = fetch("http://localhost:3000/api/products/order", {
     method: "POST",
     body: JSON.stringify(aEnvoyer),
@@ -310,12 +298,14 @@ commande.addEventListener("click", (e) => {
   });
 
   // Redirige vers la page confirmation avec l'order Id retourné par l'api
-
   envoyerCommande.then(async (response) => {
     try {
       const contenu = await response.json();
-      console.log(contenu);
-      console.log(contenu.orderId);
+
+      // Instruction pour vider le localstorage
+      localStorage.clear();
+
+      // Retour de la commande avec son numéro
       window.location.href = "./confirmation.html?orderId=" + contenu.orderId;
     } catch (e) {
       console.log(e);
