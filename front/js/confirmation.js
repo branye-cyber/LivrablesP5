@@ -16,9 +16,6 @@ fetch("http://localhost:3000/api/products/")
     const orderId = document.querySelector("#orderId");
 
     orderId.innerText = idProduit;
-
-    // Instruction pour vider le localstorage
-    localStorage.clear();
   })
   .catch(function (error) {
     console.log(
